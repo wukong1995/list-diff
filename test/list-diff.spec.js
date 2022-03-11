@@ -27,8 +27,8 @@ describe('List diff', function () {
 
   it('Making map from list with string key', function () {
     var list = [{key: 'id1'}, {key: 'id2'}, {key: 'id3'}, {key: 'id4'}]
-    var map = diff.makeKeyIndexAndFree(list, 'key')
-    map.keyIndex.should.be.deep.equal({
+    var map = diff.makeKey2Index(list, 'key')
+    map.should.be.deep.equal({
       id1: 0,
       id2: 1,
       id3: 2,
@@ -38,10 +38,10 @@ describe('List diff', function () {
 
   it('Making map from list with function', function () {
     var list = [{key: 'id1'}, {key: 'id2'}, {key: 'id3'}, {key: 'id4'}]
-    var map = diff.makeKeyIndexAndFree(list, function (item) {
+    var map = diff.makeKey2Index(list, function (item) {
       return item.key
     })
-    map.keyIndex.should.be.deep.equal({
+    map.should.be.deep.equal({
       id1: 0,
       id2: 1,
       id3: 2,
@@ -151,46 +151,6 @@ describe('List diff', function () {
       perform(before, diffs)
       assertListEqual(after, before)
     }
-  })
-
-  it('Test with no key: string item and removing', function () {
-    var before = ['a', 'b', 'c', 'd', 'e']
-    var after = ['c', 'd', 'e', 'a']
-    var diffs = diff.diff(before, after)
-    diffs.moves.length.should.be.equal(1)
-    diffs.children.should.be.deep.equal(['c', 'd', 'e', 'a', null])
-    perform(before, diffs)
-    before.should.be.deep.equal(['a', 'b', 'c', 'd'])
-  })
-
-  it('Test with no key: string item and inserting', function () {
-    var before = ['a', 'b', 'c', 'd', 'e']
-    var after = ['c', 'd', 'e', 'a', 'g', 'h', 'j']
-    var diffs = diff.diff(before, after)
-    diffs.moves.length.should.be.equal(2)
-    diffs.children.should.be.deep.equal(['c', 'd', 'e', 'a', 'g'])
-    perform(before, diffs)
-    before.should.be.deep.equal(['a', 'b', 'c', 'd', 'e', 'h', 'j'])
-  })
-
-  it('Test with no key: object item', function () {
-    var before = [{id: 'a'}, {id: 'b'}, {id: 'c'}, {id: 'd'}, {id: 'e'}]
-    var after = [{id: 'a'}, {id: 'b'}, {id: 'c'}, {id: 'd'}, {id: 'e'}, {id: 'f'}]
-    var diffs = diff.diff(before, after)
-    diffs.children.should.be.deep.equal([{id: 'a'}, {id: 'b'}, {id: 'c'}, {id: 'd'}, {id: 'e'}])
-    diffs.moves.length.should.be.equal(1)
-    perform(before, diffs)
-    assertListEqual(after, before)
-  })
-
-  it('Mix keyed items with unkeyed items', function () {
-    var before = [{id: 'a'}, {id: 'b'}, {key: 'c'}, {key: 'd'}, {id: 'e'}, {id: 'f'}, {id: 'g'}, {id: 'h'}]
-    var after = [{id: 'b', flag: 'yes'}, {key: 'c'}, {id: 'e'}, {id: 'f'}, {id: 'g'}, {key: 'd'}]
-    var diffs = diff.diff(before, after, 'id')
-    diffs.children.should.be.deep.equal([null, {id: 'b', flag: 'yes'}, {key: 'c'}, {key: 'd'}, {id: 'e'}, {id: 'f'}, {id: 'g'}, null])
-    perform(before, diffs)
-    before[0] = {id: 'b', flag: 'yes'} // because perform only operates on origin list
-    assertListEqual(after, before)
   })
 
   it('Test example', function () {
