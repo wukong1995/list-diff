@@ -56,6 +56,7 @@ describe('List diff', function () {
     diffs.moves.length.should.be.equal(5)
     perform(before, diffs)
     diffs.children.should.be.deep.equal([{id: 1}, {id: 2}, {id: 3}, null, null, null])
+    diffs.noChangeChildren.should.be.deep.equal([[{ id: 2 }, { id: 2 }], [{ id: 3 }, { id: 3 }]])
     assertListEqual(after, before)
   })
 
@@ -65,6 +66,12 @@ describe('List diff', function () {
     var diffs = diff.diff(before, after, 'id')
     perform(before, diffs)
     diffs.children.should.be.deep.equal([{id: 1}, {id: 2}, null, {id: 4}, null, {id: 6}])
+    diffs.noChangeChildren.should.be.deep.equal([
+      [{ id: 1 }, { id: 1 }],
+      [{ id: 2 }, { id: 2 }],
+      [{ id: 4 }, { id: 4 }],
+      [{ id: 6 }, { id: 6 }],
+    ])
     diffs.moves.length.should.be.equal(2)
     assertListEqual(after, before)
   })
@@ -75,6 +82,12 @@ describe('List diff', function () {
     var diffs = diff.diff(before, after, function (item) { return item })
     diffs.moves.length.should.be.equal(2)
     diffs.children.should.be.deep.equal(['a', 'b', 'c', 'd'])
+    diffs.noChangeChildren.should.be.deep.equal([
+      ['a', 'a'],
+      ['b', 'b'],
+      ['c', 'c'],
+      ['d', 'd'],
+    ])
     perform(before, diffs)
     assertListEqual(after, before)
   })
@@ -85,6 +98,12 @@ describe('List diff', function () {
     var diffs = diff.diff(before, after, function (item) { return item })
     diffs.moves.length.should.be.equal(6)
     diffs.children.should.be.deep.equal(['a', 'b', 'c', 'd', 'e', 'f'])
+    diffs.noChangeChildren.should.be.deep.equal([
+      ['a', 'a'],
+      ['b', 'b'],
+      ['c', 'c'],
+      ['d', 'd'],
+    ])
     perform(before, diffs)
     assertListEqual(after, before)
   })
@@ -95,6 +114,12 @@ describe('List diff', function () {
     var diffs = diff.diff(before, after, function (item) { return item })
     diffs.moves.length.should.be.equal(4)
     diffs.children.should.be.deep.equal(['a', 'b', 'c', 'd', 'e', 'f'])
+    diffs.noChangeChildren.should.be.deep.equal([
+      ['a', 'a'],
+      ['c', 'c'],
+      ['e', 'e'],
+      ['f', 'f'],
+    ])
     perform(before, diffs)
     assertListEqual(after, before)
   })
@@ -104,6 +129,14 @@ describe('List diff', function () {
     var after = ['h', 'i', 'a', 'c', 'd', 'u', 'e', 'f', 'g', 'j', 'b', 'z', 'x', 'y']
     var diffs = diff.diff(before, after, function (item) { return item })
     diffs.children.should.be.deep.equal(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'])
+    diffs.noChangeChildren.should.be.deep.equal([
+      ['a', 'a'],
+      ['c', 'c'],
+      ['d', 'd'],
+      ['e', 'e'],
+      ['f', 'f'],
+      ['g', 'g'],
+    ])
     perform(before, diffs)
     assertListEqual(after, before)
   })
